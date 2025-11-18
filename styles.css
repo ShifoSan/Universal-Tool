@@ -1,161 +1,126 @@
-/* ===================================
-   RESET & BASE STYLES
-   =================================== */
+/* Global Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    /* Color Palette */
-    --deep-sea-blue: #001F3F;
-    --dark-blue: #001528;
-    --neon-cyan: #00D9FF;
-    --neon-purple: #B388FF;
-    --muted-yellow: #F4E5C2;
-    --bright-red: #CC0000;
-    --white: #FFFFFF;
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    
-    /* Typography */
-    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
-    /* Spacing */
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 2rem;
-    --spacing-lg: 3rem;
-    --spacing-xl: 4rem;
-    
-    /* Border Radius */
-    --radius-sm: 8px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-    
-    /* Shadows */
-    --shadow-glow: 0 0 20px rgba(0, 217, 255, 0.3);
-    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
 body {
-    font-family: var(--font-primary);
-    background: linear-gradient(135deg, var(--dark-blue) 0%, var(--deep-sea-blue) 100%);
-    color: var(--white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #001F3F;
+    color: #FFFFFF;
     min-height: 100vh;
-    overflow-x: hidden;
-}
-
-/* ===================================
-   HERO SECTION
-   =================================== */
-.hero {
     position: relative;
-    padding: var(--spacing-xl) var(--spacing-md);
-    text-align: center;
-    background: linear-gradient(180deg, rgba(0, 31, 63, 0.8) 0%, transparent 100%);
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 217, 255, 0.03) 2px,
-            rgba(0, 217, 255, 0.03) 4px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 217, 255, 0.03) 2px,
-            rgba(0, 217, 255, 0.03) 4px
-        );
-    pointer-events: none;
-    animation: gridMove 20s linear infinite;
-}
-
-@keyframes gridMove {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(40px, 40px); }
-}
-
-.hero-title {
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 700;
-    margin-bottom: var(--spacing-sm);
-    text-shadow: 0 0 30px rgba(0, 217, 255, 0.8);
-    animation: glow 3s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-    from { text-shadow: 0 0 20px rgba(0, 217, 255, 0.5); }
-    to { text-shadow: 0 0 40px rgba(0, 217, 255, 1), 0 0 60px rgba(179, 136, 255, 0.5); }
-}
-
-.hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.5rem);
-    color: var(--muted-yellow);
-    opacity: 0.9;
-}
-
-/* ===================================
-   DASHBOARD SECTION
-   =================================== */
-.dashboard {
-    padding: var(--spacing-lg) var(--spacing-md);
+    overflow-x: hidden;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    padding: 5rem 0;
+    text-align: center;
+    background: linear-gradient(135deg, #001F3F 0%, #003366 100%);
+    overflow: hidden;
+}
+
+.grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes gridMove {
+    0% {
+        transform: perspective(500px) rotateX(60deg) translateY(0);
+    }
+    100% {
+        transform: perspective(500px) rotateX(60deg) translateY(50px);
+    }
+}
+
+.hero-title {
+    font-size: 4rem;
+    color: #00FFFF;
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    }
+    to {
+        text-shadow: 0 0 40px rgba(0, 255, 255, 1);
+    }
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: #FFFACD;
+    position: relative;
+    z-index: 1;
+}
+
+/* Dashboard Section */
+.dashboard {
+    padding: 4rem 0;
 }
 
 .section-title {
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: 2.5rem;
+    color: #00FFFF;
     text-align: center;
-    margin-bottom: var(--spacing-xs);
-    color: var(--neon-cyan);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
 }
 
 .section-subtitle {
     text-align: center;
-    color: var(--muted-yellow);
-    opacity: 0.8;
-    margin-bottom: var(--spacing-lg);
+    color: #FFFACD;
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    opacity: 0.9;
 }
 
-/* ===================================
-   TOOLS GRID
-   =================================== */
+/* Tools Grid */
 .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
+    gap: 2rem;
+    margin-top: 3rem;
 }
 
 .tool-card {
-    position: relative;
-    background: var(--glass-bg);
+    background: rgba(0, 31, 63, 0.6);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-md);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
     text-align: center;
+    transition: all 0.4s ease;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-card);
+    position: relative;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .tool-card::before {
@@ -165,12 +130,7 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(0, 217, 255, 0.1),
-        transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
     transition: left 0.5s ease;
 }
 
@@ -179,110 +139,114 @@ body {
 }
 
 .tool-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-color: var(--neon-cyan);
-    box-shadow: 
-        var(--shadow-card),
-        0 0 30px rgba(0, 217, 255, 0.3),
-        inset 0 0 20px rgba(0, 217, 255, 0.05);
+    transform: translateY(-10px) scale(1.05);
+    border-color: #00FFFF;
+    box-shadow: 0 10px 40px rgba(0, 255, 255, 0.4);
+    background: rgba(0, 31, 63, 0.8);
 }
 
 .tool-icon {
-    font-size: 3rem;
-    margin-bottom: var(--spacing-sm);
-    filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .tool-title {
-    font-size: 1.5rem;
-    margin-bottom: var(--spacing-xs);
-    color: var(--white);
+    font-size: 1.8rem;
+    color: #00FFFF;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .tool-description {
-    font-size: 0.9rem;
-    color: var(--muted-yellow);
-    opacity: 0.8;
-    margin-bottom: var(--spacing-sm);
-    line-height: 1.5;
+    color: #FFFACD;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
 }
 
 .tool-badge {
     display: inline-block;
-    padding: 0.4rem 1rem;
-    background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+    background: rgba(138, 43, 226, 0.3);
+    border: 1px solid rgba(138, 43, 226, 0.5);
+    padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    color: #FFFACD;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
-/* ===================================
-   FOOTER
-   =================================== */
+.tool-badge.active {
+    background: linear-gradient(135deg, #00FF00, #00CC00);
+    border-color: #00FF00;
+    color: #001F3F;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
+    }
+}
+
+/* Footer */
 .footer {
+    background: rgba(0, 31, 63, 0.8);
+    padding: 2rem 0;
     text-align: center;
-    padding: var(--spacing-md);
-    background: var(--dark-blue);
-    border-top: 1px solid var(--glass-border);
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+    margin-top: 4rem;
 }
 
 .footer p {
-    margin: var(--spacing-xs) 0;
-    opacity: 0.7;
-}
-
-.footer strong {
-    color: var(--neon-cyan);
+    color: #FFFACD;
+    margin-bottom: 0.5rem;
 }
 
 .footer-links {
-    display: flex;
-    gap: var(--spacing-md);
-    justify-content: center;
+    margin-top: 1rem;
 }
 
 .footer-links a {
-    color: var(--neon-cyan);
+    color: #00FFFF;
     text-decoration: none;
+    margin: 0 1rem;
     transition: all 0.3s ease;
 }
 
 .footer-links a:hover {
-    color: var(--neon-purple);
-    text-shadow: 0 0 10px rgba(179, 136, 255, 0.8);
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
 }
 
-/* ===================================
-   RESPONSIVE DESIGN
-   =================================== */
-@media (max-width: 768px) {
-    .hero {
-        padding: var(--spacing-lg) var(--spacing-sm);
-    }
-    
-    .dashboard {
-        padding: var(--spacing-md) var(--spacing-sm);
-    }
-    
-    .tools-grid {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
-    }
-    
-    .tool-card {
-        padding: var(--spacing-sm);
-    }
+/* Animations */
+.tools-grid .tool-card {
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
 }
 
-/* ===================================
-   ANIMATIONS & EFFECTS
-   =================================== */
-@keyframes fadeIn {
+.tools-grid .tool-card:nth-child(1) { animation-delay: 0.1s; }
+.tools-grid .tool-card:nth-child(2) { animation-delay: 0.2s; }
+.tools-grid .tool-card:nth-child(3) { animation-delay: 0.3s; }
+.tools-grid .tool-card:nth-child(4) { animation-delay: 0.4s; }
+.tools-grid .tool-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -290,12 +254,30 @@ body {
     }
 }
 
-.tool-card {
-    animation: fadeIn 0.6s ease forwards;
-}
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
 
-.tool-card:nth-child(1) { animation-delay: 0.1s; }
-.tool-card:nth-child(2) { animation-delay: 0.2s; }
-.tool-card:nth-child(3) { animation-delay: 0.3s; }
-.tool-card:nth-child(4) { animation-delay: 0.4s; }
-.tool-card:nth-child(5) { animation-delay: 0.5s; }
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .tools-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .tool-card {
+        padding: 1.5rem;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+}
