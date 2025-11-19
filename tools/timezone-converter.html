@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Time Zone Converter | All-in-one Pocket</title>
+    <meta name="description" content="Convert time across different time zones instantly">
+    <link rel="stylesheet" href="timezone-converter.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <a href="../index.html" class="back-btn">← Back to Hub</a>
+            <h1 class="hero-title">🌍 Time Zone Converter</h1>
+            <p class="hero-subtitle">Convert time across the world instantly</p>
+            <div class="grid-overlay"></div>
+        </div>
+    </header>
+
+    <!-- Main Converter Section -->
+    <main class="converter-section">
+        <div class="container">
+            <!-- Quick Time Display -->
+            <div class="current-time-display">
+                <div class="time-card">
+                    <div class="time-label">Your Local Time</div>
+                    <div class="current-time" id="localTime">--:-- --</div>
+                    <div class="current-date" id="localDate">--- --, ----</div>
+                </div>
+            </div>
+
+            <!-- Converter Card -->
+            <div class="converter-card">
+                <h2 class="section-title">Convert Time</h2>
+                
+                <!-- From Section -->
+                <div class="time-input-group">
+                    <label class="input-label">From</label>
+                    <div class="input-row">
+                        <select class="timezone-select" id="fromTimezone">
+                            <option value="UTC">UTC - Coordinated Universal Time</option>
+                            <option value="America/New_York">New York (EST/EDT)</option>
+                            <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
+                            <option value="America/Chicago">Chicago (CST/CDT)</option>
+                            <option value="Europe/London">London (GMT/BST)</option>
+                            <option value="Europe/Paris">Paris (CET/CEST)</option>
+                            <option value="Europe/Berlin">Berlin (CET/CEST)</option>
+                            <option value="Asia/Tokyo">Tokyo (JST)</option>
+                            <option value="Asia/Shanghai">Shanghai (CST)</option>
+                            <option value="Asia/Kolkata" selected>India (IST)</option>
+                            <option value="Asia/Dubai">Dubai (GST)</option>
+                            <option value="Australia/Sydney">Sydney (AEDT/AEST)</option>
+                            <option value="Pacific/Auckland">Auckland (NZDT/NZST)</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <input type="date" class="date-input" id="fromDate">
+                        <input type="time" class="time-input" id="fromTime">
+                    </div>
+                </div>
+
+                <!-- Swap Button -->
+                <div class="swap-container">
+                    <button class="swap-btn" id="swapBtn" title="Swap timezones">
+                        <span class="swap-icon">⇅</span>
+                    </button>
+                </div>
+
+                <!-- To Section -->
+                <div class="time-input-group">
+                    <label class="input-label">To</label>
+                    <div class="input-row">
+                        <select class="timezone-select" id="toTimezone">
+                            <option value="UTC" selected>UTC - Coordinated Universal Time</option>
+                            <option value="America/New_York">New York (EST/EDT)</option>
+                            <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
+                            <option value="America/Chicago">Chicago (CST/CDT)</option>
+                            <option value="Europe/London">London (GMT/BST)</option>
+                            <option value="Europe/Paris">Paris (CET/CEST)</option>
+                            <option value="Europe/Berlin">Berlin (CET/CEST)</option>
+                            <option value="Asia/Tokyo">Tokyo (JST)</option>
+                            <option value="Asia/Shanghai">Shanghai (CST)</option>
+                            <option value="Asia/Kolkata">India (IST)</option>
+                            <option value="Asia/Dubai">Dubai (GST)</option>
+                            <option value="Australia/Sydney">Sydney (AEDT/AEST)</option>
+                            <option value="Pacific/Auckland">Auckland (NZDT/NZST)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button class="convert-btn" id="convertBtn">Convert Time</button>
+
+                <!-- Result Display -->
+                <div class="result-card" id="resultCard" style="display: none;">
+                    <div class="result-icon">✓</div>
+                    <div class="result-content">
+                        <div class="result-label">Converted Time</div>
+                        <div class="result-time" id="resultTime">--:-- --</div>
+                        <div class="result-date" id="resultDate">--- --, ----</div>
+                        <div class="result-timezone" id="resultTimezone">---</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="presets-section">
+                <h3 class="presets-title">Quick Presets</h3>
+                <div class="presets-grid">
+                    <button class="preset-btn" data-preset="now">🕐 Now</button>
+                    <button class="preset-btn" data-preset="tomorrow">📅 Tomorrow</button>
+                    <button class="preset-btn" data-preset="next-week">📆 Next Week</button>
+                    <button class="preset-btn" data-preset="meeting">💼 Meeting Time (2 PM)</button>
+                </div>
+            </div>
+
+            <!-- Time Zone Info -->
+            <div class="info-section">
+                <h3 class="info-title">💡 Did You Know?</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-emoji">🌏</div>
+                        <div class="info-text">There are 24 major time zones spanning the globe</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-emoji">⏰</div>
+                        <div class="info-text">Some countries use half-hour or 45-minute offsets</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-emoji">☀️</div>
+                        <div class="info-text">Daylight Saving Time can shift zones by 1 hour</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Made by <strong>ShifoSan</strong> | 2025</p>
+            <p class="footer-links">
+                <a href="https://github.com/ShifoSan/All-in-one-Pocket" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="timezone-converter.js"></script>
+</body>
+</html>
