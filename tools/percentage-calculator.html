@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔢 Percentage Calculator | All-in-one Pocket</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="percentage-calculator.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="../index.html" class="nav-brand">🚀 All-in-one Pocket</a>
+            <a href="../index.html" class="nav-link">← Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Tool Section -->
+    <main class="tool-page">
+        <div class="container">
+            <div class="tool-header">
+                <div class="tool-icon-large">🔢</div>
+                <h1 class="tool-page-title">Percentage Calculator</h1>
+                <p class="tool-page-subtitle">Calculate percentages quickly and easily</p>
+            </div>
+
+            <!-- Calculator Modes -->
+            <div class="calculator-card">
+                <!-- Mode Selector -->
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="percent-of">What is X% of Y?</button>
+                    <button class="mode-btn" data-mode="is-what-percent">X is what % of Y?</button>
+                    <button class="mode-btn" data-mode="percent-change">% Increase/Decrease</button>
+                </div>
+
+                <!-- Mode 1: What is X% of Y? -->
+                <div class="calc-mode active" id="mode-percent-of">
+                    <h3 class="mode-title">What is <span class="highlight">X%</span> of <span class="highlight">Y</span>?</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label class="input-label">Percentage (%)</label>
+                            <input type="number" id="percent1" class="calc-input" placeholder="15" value="15">
+                        </div>
+                        <div class="operator">of</div>
+                        <div class="input-group">
+                            <label class="input-label">Number</label>
+                            <input type="number" id="number1" class="calc-input" placeholder="200" value="200">
+                        </div>
+                    </div>
+                    <div class="result-display">
+                        <div class="result-label">Result:</div>
+                        <div class="result-value" id="result1">30</div>
+                    </div>
+                    <div class="formula-hint">Formula: (X ÷ 100) × Y</div>
+                </div>
+
+                <!-- Mode 2: X is what percent of Y? -->
+                <div class="calc-mode" id="mode-is-what-percent">
+                    <h3 class="mode-title"><span class="highlight">X</span> is what % of <span class="highlight">Y</span>?</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label class="input-label">Number X</label>
+                            <input type="number" id="number2a" class="calc-input" placeholder="30" value="30">
+                        </div>
+                        <div class="operator">is what % of</div>
+                        <div class="input-group">
+                            <label class="input-label">Number Y</label>
+                            <input type="number" id="number2b" class="calc-input" placeholder="200" value="200">
+                        </div>
+                    </div>
+                    <div class="result-display">
+                        <div class="result-label">Result:</div>
+                        <div class="result-value" id="result2">15%</div>
+                    </div>
+                    <div class="formula-hint">Formula: (X ÷ Y) × 100</div>
+                </div>
+
+                <!-- Mode 3: Percentage Change -->
+                <div class="calc-mode" id="mode-percent-change">
+                    <h3 class="mode-title">Percentage Increase/Decrease</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label class="input-label">Original Value</label>
+                            <input type="number" id="original" class="calc-input" placeholder="100" value="100">
+                        </div>
+                        <div class="operator">→</div>
+                        <div class="input-group">
+                            <label class="input-label">New Value</label>
+                            <input type="number" id="new" class="calc-input" placeholder="120" value="120">
+                        </div>
+                    </div>
+                    <div class="result-display">
+                        <div class="result-label">Change:</div>
+                        <div class="result-value" id="result3">+20%</div>
+                    </div>
+                    <div class="formula-hint">Formula: ((New - Original) ÷ Original) × 100</div>
+                </div>
+            </div>
+
+            <!-- Mental Math Tips Section -->
+            <div class="tips-card">
+                <h3 class="tips-title">🧠 Mental Math Tricks</h3>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">10%</span>
+                        </div>
+                        <div class="tip-description">Move the decimal point one place left</div>
+                        <div class="tip-example">10% of 450 = 45</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">5%</span>
+                        </div>
+                        <div class="tip-description">Find 10% and divide by 2</div>
+                        <div class="tip-example">5% of 200 = 20 ÷ 2 = 10</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">1%</span>
+                        </div>
+                        <div class="tip-description">Move the decimal point two places left</div>
+                        <div class="tip-example">1% of 350 = 3.5</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">15%</span>
+                        </div>
+                        <div class="tip-description">Find 10% + 5%</div>
+                        <div class="tip-example">15% of 200 = 20 + 10 = 30</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">25%</span>
+                        </div>
+                        <div class="tip-description">Divide by 4 (quarter)</div>
+                        <div class="tip-example">25% of 80 = 80 ÷ 4 = 20</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">50%</span>
+                        </div>
+                        <div class="tip-description">Divide by 2 (half)</div>
+                        <div class="tip-example">50% of 160 = 160 ÷ 2 = 80</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">20%</span>
+                        </div>
+                        <div class="tip-description">Find 10% and multiply by 2</div>
+                        <div class="tip-example">20% of 150 = 15 × 2 = 30</div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <span class="tip-icon">💡</span>
+                            <span class="tip-percent">75%</span>
+                        </div>
+                        <div class="tip-description">Find 50% + 25%</div>
+                        <div class="tip-example">75% of 80 = 40 + 20 = 60</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Made by <strong>ShifoSan</strong> | 2025</p>
+        </div>
+    </footer>
+
+    <script src="percentage-calculator.js"></script>
+</body>
+</html>
