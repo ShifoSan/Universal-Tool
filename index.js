@@ -17,7 +17,7 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { message, sessionId } = req.body;
     if (!chatSessions.has(sessionId)) {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
       const chat = model.startChat({
         systemInstruction: "You are a helpful assistant for the All-in-one Pocket app. Help users understand and use the various tools available..."
       });
