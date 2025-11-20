@@ -94,25 +94,29 @@
 }
 
 .clear-btn {
-    background: linear-gradient(135deg, #FF416C, #FF4B2B);
+    background: linear-gradient(135deg, #FF416C, #FF4B2B); /* Keep red for destructive action */
     color: white;
     box-shadow: 0 5px 15px rgba(255, 75, 43, 0.3);
+    border: 1px solid rgba(255, 215, 0, 0.3); /* Subtle gold border */
 }
 
 .clear-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 75, 43, 0.5);
+    box-shadow: 0 8px 20px rgba(255, 75, 43, 0.5), 0 0 10px var(--accent-glow);
+    border-color: var(--accent-color);
 }
 
 .copy-btn {
-    background: linear-gradient(135deg, var(--accent-color), #00BFFF);
-    color: #001F3F;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+    color: #000000;
     box-shadow: 0 5px 15px var(--accent-glow);
+    border: 1px solid var(--accent-color);
 }
 
 .copy-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px var(--accent-glow);
+    background: linear-gradient(135deg, var(--accent-high), var(--accent-color));
 }
 
 /* Statistics Grid */
