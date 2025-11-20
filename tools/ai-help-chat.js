@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sessionId = 'session_' + Date.now();
 
     // API Endpoint (Placeholder)
-    const API_URL = 'https://YOUR-RENDER-SERVICE.onrender.com/api/chat';
+    const API_URL = 'https://all-in-one-pocket.onrender.com';
 
     // System Instructions (For context only, backend usually handles this, but we simulate for structure)
     const SYSTEM_INSTRUCTIONS = `
