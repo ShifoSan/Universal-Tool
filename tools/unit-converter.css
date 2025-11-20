@@ -158,7 +158,7 @@
 
 .swap-btn {
     background: linear-gradient(135deg, #FF416C, #FF4B2B);
-    border: none;
+    border: 2px solid var(--accent-color); /* Gold border */
     width: 60px;
     height: 60px;
     border-radius: 50%;
