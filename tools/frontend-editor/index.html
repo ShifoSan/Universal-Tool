@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Editor | Universal Tool</title>
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+
+    <!-- Tool Specific Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- CodeMirror 5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <div class="editor-layout fade-in">
+
+        <!-- Left Pane: Editor -->
+        <section class="pane pane-editor">
+            <div class="pane-header">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="html">HTML</button>
+                    <button class="tab-btn" data-tab="css">CSS</button>
+                    <button class="tab-btn" data-tab="js">JS</button>
+                </div>
+                <div class="editor-actions">
+                    <button id="formatBtn" class="icon-btn" title="Format Code (Simple)">
+                         <i data-lucide="align-justify"></i>
+                    </button>
+                    <button id="resetBtn" class="icon-btn" title="Reset Code">
+                         <i data-lucide="rotate-ccw"></i>
+                    </button>
+                    <button id="downloadBtn" class="icon-btn" title="Download ZIP">
+                         <i data-lucide="download"></i>
+                    </button>
+                    <button id="fullscreenBtn" class="icon-btn mobile-only" title="Toggle Fullscreen">
+                         <i data-lucide="maximize"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="editor-container">
+                <div id="editor-html" class="code-wrapper active"></div>
+                <div id="editor-css" class="code-wrapper"></div>
+                <div id="editor-js" class="code-wrapper"></div>
+            </div>
+
+            <div class="ext-libs">
+                <i data-lucide="link" size="14"></i>
+                <input type="text" id="externalLibs" placeholder="External CDN URL (e.g. jQuery)..." class="lib-input">
+            </div>
+        </section>
+
+        <!-- Right Pane: Preview & Console -->
+        <section class="pane pane-output">
+
+            <!-- Preview Section -->
+            <div class="panel-section" id="previewPanel">
+                <div class="pane-header">
+                    <div class="header-title">
+                        <i data-lucide="eye"></i> <span>Preview</span>
+                    </div>
+                    <div class="header-controls">
+                        <div class="device-toggles">
+                            <button class="device-btn active" data-width="100%" title="Desktop">
+                                <i data-lucide="monitor"></i>
+                            </button>
+                            <button class="device-btn" data-width="768px" title="Tablet">
+                                <i data-lucide="tablet"></i>
+                            </button>
+                            <button class="device-btn" data-width="375px" title="Mobile">
+                                <i data-lucide="smartphone"></i>
+                            </button>
+                        </div>
+                        <button id="runBtn" class="btn-primary small-btn">
+                            <i data-lucide="play"></i> Run
+                        </button>
+                        <button class="collapse-btn" data-target="previewPanel">
+                            <i data-lucide="chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-content preview-container">
+                    <div class="iframe-wrapper">
+                        <iframe id="previewFrame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Section -->
+            <div class="panel-section" id="consolePanel">
+                <div class="pane-header">
+                    <div class="header-title">
+                        <i data-lucide="terminal"></i> <span>Console</span>
+                    </div>
+                    <div class="header-controls">
+                        <button id="clearConsoleBtn" class="icon-btn" title="Clear Console">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                        <button class="collapse-btn" data-target="consolePanel">
+                            <i data-lucide="chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-content console-content" id="consoleOutput">
+                    <div class="console-placeholder">Console output will appear here...</div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
