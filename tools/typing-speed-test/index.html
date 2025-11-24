@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Test | Universal Tool</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .test-area {
+            position: relative;
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .stat-item span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        .word-display {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            user-select: none;
+            margin-bottom: 1.5rem;
+            min-height: 100px;
+        }
+        .current-word {
+            background-color: var(--accent-glow);
+            color: var(--text-primary);
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+        }
+        .correct { color: #10b981; } /* Emerald 500 */
+        .incorrect { color: #ef4444; text-decoration: underline; } /* Red 500 */
+
+        .result-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .result-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <main class="container fade-in">
+        <div class="text-center mt-3" style="margin-bottom: 3rem;">
+            <h1>Typing Speed Test</h1>
+            <p style="color: var(--text-secondary);">Test your WPM and Accuracy</p>
+        </div>
+
+        <div class="test-area" id="testArea">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div id="timer">60</div>
+                    <span>Time</span>
+                </div>
+                <div class="stat-item">
+                    <div id="wpm">0</div>
+                    <span>WPM</span>
+                </div>
+                <div class="stat-item">
+                    <div id="accuracy">100%</div>
+                    <span>Accuracy</span>
+                </div>
+            </div>
+
+            <div class="word-display" id="wordDisplay">
+                <!-- Words injected here -->
+            </div>
+
+            <input type="text" id="typeInput" class="form-input" placeholder="Start typing here..." autocomplete="off">
+
+            <!-- Result Overlay -->
+            <div class="result-overlay" id="resultOverlay">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Time's Up!</h2>
+                <div style="font-size: 4rem; font-weight: 800; color: var(--accent-primary);" id="finalWpm">0</div>
+                <p style="color: var(--text-secondary);">Words Per Minute</p>
+                <div style="margin-top: 1rem; font-size: 1.2rem;">Accuracy: <span id="finalAcc">0%</span></div>
+                <button class="btn-primary mt-2" onclick="restartTest()">
+                    <i data-lucide="refresh-cw"></i> Try Again
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="btn-secondary" onclick="restartTest()">
+                <i data-lucide="refresh-ccw"></i> Restart
+            </button>
+        </div>
+    </main>
+
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script>
+        const sampleText = "The quick brown fox jumps over the lazy dog. Technology is evolving at a rapid pace, changing how we live and work. Coding is not just about writing syntax; it is about solving problems and creating solutions. Creativity and logic go hand in hand when building software. Always strive for clean, readable, and maintainable code. The future belongs to those who learn and adapt continuously.";
+
+        let words = [];
+        let currentWordIndex = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let correctKeystrokes = 0;
+        let totalKeystrokes = 0;
+        let isRunning = false;
+        const TIME_LIMIT = 60;
+
+        const wordDisplay = document.getElementById('wordDisplay');
+        const input = document.getElementById('typeInput');
+        const timerEl = document.getElementById('timer');
+        const wpmEl = document.getElementById('wpm');
+        const accEl = document.getElementById('accuracy');
+        const overlay = document.getElementById('resultOverlay');
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        function init() {
+            restartTest();
+            input.addEventListener('input', checkInput);
+        }
+
+        function restartTest() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            startTime = null;
+            currentWordIndex = 0;
+            correctKeystrokes = 0;
+            totalKeystrokes = 0;
+            timerEl.textContent = TIME_LIMIT;
+            wpmEl.textContent = 0;
+            accEl.textContent = '100%';
+            input.value = '';
+            input.disabled = false;
+            overlay.classList.remove('active');
+
+            // Randomize or just split text
+            // Ideally shuffle, but let's just split for now
+            words = sampleText.split(' ').sort(() => 0.5 - Math.random());
+            renderWords();
+            input.focus();
+        }
+
+        function renderWords() {
+            wordDisplay.innerHTML = '';
+            words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.textContent = word + ' ';
+                span.id = `word-${index}`;
+                if (index === 0) span.classList.add('current-word');
+                wordDisplay.appendChild(span);
+            });
+        }
+
+        function startTimer() {
+            isRunning = true;
+            startTime = Date.now();
+            let timeLeft = TIME_LIMIT;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+
+                // Update WPM Live
+                const elapsedMin = (TIME_LIMIT - timeLeft) / 60;
+                const wpm = Math.round((correctKeystrokes / 5) / elapsedMin) || 0;
+                wpmEl.textContent = wpm;
+
+                if (timeLeft <= 0) {
+                    endTest();
+                }
+            }, 1000);
+        }
+
+        function checkInput() {
+            if (!isRunning && input.value.length > 0) startTimer();
+
+            const typed = input.value;
+            const currentTarget = words[currentWordIndex];
+
+            // Space triggers next word
+            if (typed.endsWith(' ')) {
+                const trimmed = typed.trim();
+                const wordSpan = document.getElementById(`word-${currentWordIndex}`);
+
+                totalKeystrokes += typed.length; // Count space
+
+                if (trimmed === currentTarget) {
+                    wordSpan.className = 'correct';
+                    correctKeystrokes += (currentTarget.length + 1); // +1 for space
+                } else {
+                    wordSpan.className = 'incorrect';
+                }
+
+                currentWordIndex++;
+                if (currentWordIndex >= words.length) {
+                    endTest();
+                    return;
+                }
+
+                // Highlight next
+                const nextSpan = document.getElementById(`word-${currentWordIndex}`);
+                if (nextSpan) nextSpan.classList.add('current-word');
+
+                // Clear input
+                input.value = '';
+
+                // Update Accuracy
+                const acc = Math.round((correctKeystrokes / totalKeystrokes) * 100) || 100;
+                accEl.textContent = acc + '%';
+            }
+        }
+
+        function endTest() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            input.disabled = true;
+
+            const finalWpm = wpmEl.textContent;
+            const finalAcc = accEl.textContent;
+
+            document.getElementById('finalWpm').textContent = finalWpm;
+            document.getElementById('finalAcc').textContent = finalAcc;
+            overlay.classList.add('active');
+        }
+    </script>
+</body>
+</html>

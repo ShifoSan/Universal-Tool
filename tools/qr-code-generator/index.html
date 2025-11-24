@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator | Universal Tool</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .qr-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            margin-top: 2rem;
+            position: relative;
+        }
+        .qr-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 768px) {
+            .controls { grid-template-columns: 1fr; }
+        }
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        input[type="color"] {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            background: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <main class="container fade-in">
+        <div class="text-center mt-3" style="margin-bottom: 3rem;">
+            <h1>QR Code Generator</h1>
+            <p style="color: var(--text-secondary);">Create custom QR codes instantly</p>
+        </div>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div class="controls">
+                <div>
+                    <div class="input-group">
+                        <label class="input-label">Content (URL, Text, etc.)</label>
+                        <textarea id="qrText" class="form-textarea" rows="4" placeholder="Enter text or paste a link here..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">QR Color</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="qrColor" value="#000000">
+                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Select Color</span>
+                        </div>
+                    </div>
+
+                    <button id="generateBtn" class="btn-primary" style="width: 100%; justify-content: center;">
+                        <i data-lucide="qr-code"></i> Generate QR Code
+                    </button>
+                </div>
+
+                <div class="qr-preview">
+                    <div class="qr-wrapper" id="qrContainer">
+                         <span style="color: #64748b;">QR Code will appear here</span>
+                    </div>
+                    <button id="downloadBtn" class="btn-secondary mt-2" style="width: 100%; justify-content: center;" disabled>
+                        <i data-lucide="download"></i> Download Image
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const qrText = document.getElementById('qrText');
+            const qrColor = document.getElementById('qrColor');
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const qrContainer = document.getElementById('qrContainer');
+
+            const API_BASE = 'https://api.qrserver.com/v1/create-qr-code/';
+
+            function generateQR() {
+                const text = qrText.value.trim();
+                if (!text) return;
+
+                const colorHex = qrColor.value.replace('#', '');
+                const size = '300x300';
+                // QR Server API format: color=000000
+                const url = `${API_BASE}?size=${size}&data=${encodeURIComponent(text)}&color=${colorHex}&bgcolor=ffffff&margin=10`;
+
+                qrContainer.innerHTML = `<div class="fade-in"><img src="${url}" alt="QR Code" class="qr-image" id="qrImg"></div>`;
+
+                const img = document.getElementById('qrImg');
+                img.onload = () => {
+                    downloadBtn.disabled = false;
+                    downloadBtn.onclick = () => downloadImage(url);
+                };
+            }
+
+            async function downloadImage(url) {
+                try {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+
+                    const link = document.createElement('a');
+                    link.href = objectUrl;
+                    link.download = 'qrcode.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(objectUrl);
+                } catch (e) {
+                    console.error('Download failed', e);
+                    alert('Could not download image. Try right-clicking and "Save Image As".');
+                }
+            }
+
+            generateBtn.addEventListener('click', generateQR);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter | Universal Tool</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        .tab-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+        .converter-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .input-block {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        .equal-sign {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <main class="container fade-in">
+        <div class="text-center mt-3" style="margin-bottom: 3rem;">
+            <h1>Unit Converter</h1>
+            <p style="color: var(--text-secondary);">Convert length, mass, temperature and more</p>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs">
+            <button class="tab-btn active" data-cat="length">Length</button>
+            <button class="tab-btn" data-cat="mass">Mass</button>
+            <button class="tab-btn" data-cat="temp">Temperature</button>
+            <button class="tab-btn" data-cat="time">Time</button>
+            <button class="tab-btn" data-cat="digital">Digital Storage</button>
+        </div>
+
+        <div class="converter-wrapper">
+            <div class="input-block">
+                <input type="number" id="input1" class="form-input" placeholder="0">
+                <select id="unit1" class="form-select mt-1"></select>
+            </div>
+
+            <div class="equal-sign">=</div>
+
+            <div class="input-block">
+                <input type="number" id="input2" class="form-input" placeholder="0">
+                <select id="unit2" class="form-select mt-1"></select>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script>
+        const units = {
+            length: {
+                meters: 1,
+                kilometers: 0.001,
+                centimeters: 100,
+                millimeters: 1000,
+                inches: 39.3701,
+                feet: 3.28084,
+                yards: 1.09361,
+                miles: 0.000621371
+            },
+            mass: {
+                kilograms: 1,
+                grams: 1000,
+                milligrams: 1000000,
+                metric_tonnes: 0.001,
+                pounds: 2.20462,
+                ounces: 35.274
+            },
+            time: {
+                seconds: 1,
+                minutes: 1/60,
+                hours: 1/3600,
+                days: 1/86400,
+                weeks: 1/604800
+            },
+            digital: {
+                bytes: 1,
+                kilobytes: 1/1024,
+                megabytes: 1/1048576,
+                gigabytes: 1/1073741824,
+                terabytes: 1/1099511627776
+            },
+            // Temp is special, handled separately
+            temp: ['Celsius', 'Fahrenheit', 'Kelvin']
+        };
+
+        let currentCat = 'length';
+
+        const input1 = document.getElementById('input1');
+        const input2 = document.getElementById('input2');
+        const unit1 = document.getElementById('unit1');
+        const unit2 = document.getElementById('unit2');
+        const tabs = document.querySelectorAll('.tab-btn');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCategory('length');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentCat = tab.dataset.cat;
+                    initCategory(currentCat);
+                });
+            });
+
+            [input1, input2, unit1, unit2].forEach(el => {
+                el.addEventListener('input', (e) => convert(e.target === input2 || e.target === unit2 ? 'reverse' : 'forward'));
+            });
+        });
+
+        function initCategory(cat) {
+            // Clear selects
+            unit1.innerHTML = '';
+            unit2.innerHTML = '';
+
+            let keys = [];
+            if (cat === 'temp') {
+                keys = units.temp;
+            } else {
+                keys = Object.keys(units[cat]);
+            }
+
+            keys.forEach(k => {
+                // Capitalize
+                const label = k.charAt(0).toUpperCase() + k.slice(1).replace('_', ' ');
+                unit1.add(new Option(label, k));
+                unit2.add(new Option(label, k));
+            });
+
+            // Set defaults (first and second)
+            if (keys.length > 1) {
+                unit2.value = keys[1];
+            }
+
+            input1.value = 1;
+            convert('forward');
+        }
+
+        function convert(direction) {
+            const val1 = parseFloat(input1.value);
+            const val2 = parseFloat(input2.value);
+            const u1 = unit1.value;
+            const u2 = unit2.value;
+
+            if (currentCat === 'temp') {
+                // Temp Special Logic
+                let val = direction === 'forward' ? val1 : val2;
+                let from = direction === 'forward' ? u1 : u2;
+                let to = direction === 'forward' ? u2 : u1;
+                let result;
+
+                if (isNaN(val)) {
+                    if (direction === 'forward') input2.value = '';
+                    else input1.value = '';
+                    return;
+                }
+
+                if (from === to) result = val;
+                else if (from === 'Celsius') {
+                    if (to === 'Fahrenheit') result = (val * 9/5) + 32;
+                    else result = val + 273.15; // Kelvin
+                } else if (from === 'Fahrenheit') {
+                    if (to === 'Celsius') result = (val - 32) * 5/9;
+                    else result = (val - 32) * 5/9 + 273.15;
+                } else if (from === 'Kelvin') {
+                    if (to === 'Celsius') result = val - 273.15;
+                    else result = (val - 273.15) * 9/5 + 32;
+                }
+
+                if (direction === 'forward') input2.value = parseFloat(result.toFixed(4));
+                else input1.value = parseFloat(result.toFixed(4));
+
+            } else {
+                // Standard Factor Logic
+                // Base unit is always the value 1 in the object (e.g., meters)
+                // factor = to / from? No.
+                // val_in_base = val1 / units[cat][u1]
+                // val2 = val_in_base * units[cat][u2]
+
+                // Wait, if 1 km = 0.001 (relative to meter? No my map is backwards).
+                // My map: meters: 1, kilometers: 0.001. This implies 1 meter = 0.001 km. Correct.
+                // So to convert FROM u1 TO u2:
+                // val_base = val1 / units[cat][u1]; // e.g. 1000m / 1 = 1000 base units.
+                // val2 = val_base * units[cat][u2]; // 1000 * 0.001 (km) = 1 km. Correct.
+
+                const rates = units[currentCat];
+
+                if (direction === 'forward') {
+                    if (isNaN(val1)) { input2.value = ''; return; }
+                    const base = val1 / rates[u1];
+                    const res = base * rates[u2];
+                    input2.value = parseFloat(res.toFixed(6));
+                } else {
+                    if (isNaN(val2)) { input1.value = ''; return; }
+                    const base = val2 / rates[u2];
+                    const res = base * rates[u1];
+                    input1.value = parseFloat(res.toFixed(6));
+                }
+            }
+        }
+    </script>
+</body>
+</html>
