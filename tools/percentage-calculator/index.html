@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator | Universal Tool</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .calc-group {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+        .calc-group:last-child {
+            border-bottom: none;
+        }
+        .calc-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .calc-input {
+            width: 100px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .calc-static {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        .result-box {
+            margin-left: auto;
+            background: var(--bg-card-hover);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+            min-width: 120px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        @media (max-width: 768px) {
+            .result-box {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            .calc-row {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <main class="container fade-in">
+        <div class="text-center mt-3" style="margin-bottom: 3rem;">
+            <h1>Percentage Calculator</h1>
+            <p style="color: var(--text-secondary);">Quick percentage computations</p>
+        </div>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+
+            <!-- Type 1: What is X% of Y? -->
+            <div class="calc-group">
+                <div class="calc-row">
+                    <span class="calc-static">What is</span>
+                    <input type="number" id="p1_num" class="form-input calc-input" placeholder="X">
+                    <span class="calc-static">% of</span>
+                    <input type="number" id="p1_total" class="form-input calc-input" placeholder="Y">
+                    <span class="calc-static">?</span>
+                    <div id="p1_result" class="result-box">-</div>
+                </div>
+            </div>
+
+            <!-- Type 2: X is what % of Y? -->
+            <div class="calc-group">
+                <div class="calc-row">
+                    <input type="number" id="p2_num" class="form-input calc-input" placeholder="X">
+                    <span class="calc-static">is what % of</span>
+                    <input type="number" id="p2_total" class="form-input calc-input" placeholder="Y">
+                    <span class="calc-static">?</span>
+                    <div id="p2_result" class="result-box">-</div>
+                </div>
+            </div>
+
+            <!-- Type 3: % Change from X to Y -->
+            <div class="calc-group">
+                <div class="calc-row">
+                    <span class="calc-static">Change from</span>
+                    <input type="number" id="p3_from" class="form-input calc-input" placeholder="X">
+                    <span class="calc-static">to</span>
+                    <input type="number" id="p3_to" class="form-input calc-input" placeholder="Y">
+                    <span class="calc-static">?</span>
+                    <div id="p3_result" class="result-box">-</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            function calculate() {
+                // Calc 1: (X / 100) * Y
+                const p1_n = parseFloat(document.getElementById('p1_num').value);
+                const p1_t = parseFloat(document.getElementById('p1_total').value);
+                const p1_res = document.getElementById('p1_result');
+
+                if (!isNaN(p1_n) && !isNaN(p1_t)) {
+                    p1_res.textContent = ((p1_n / 100) * p1_t).toFixed(2);
+                } else {
+                    p1_res.textContent = '-';
+                }
+
+                // Calc 2: (X / Y) * 100
+                const p2_n = parseFloat(document.getElementById('p2_num').value);
+                const p2_t = parseFloat(document.getElementById('p2_total').value);
+                const p2_res = document.getElementById('p2_result');
+
+                if (!isNaN(p2_n) && !isNaN(p2_t) && p2_t !== 0) {
+                    p2_res.textContent = ((p2_n / p2_t) * 100).toFixed(2) + '%';
+                } else {
+                    p2_res.textContent = '-';
+                }
+
+                // Calc 3: ((Y - X) / X) * 100
+                const p3_f = parseFloat(document.getElementById('p3_from').value);
+                const p3_t = parseFloat(document.getElementById('p3_to').value);
+                const p3_res = document.getElementById('p3_result');
+
+                if (!isNaN(p3_f) && !isNaN(p3_t) && p3_f !== 0) {
+                    const change = ((p3_t - p3_f) / Math.abs(p3_f)) * 100;
+                    const sign = change > 0 ? '+' : '';
+                    p3_res.textContent = sign + change.toFixed(2) + '%';
+                    p3_res.style.color = change >= 0 ? 'var(--accent-primary)' : '#ef4444'; // Red if negative
+                } else {
+                    p3_res.textContent = '-';
+                    p3_res.style.color = 'var(--accent-primary)';
+                }
+            }
+
+            // Attach listeners to all inputs
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(inp => inp.addEventListener('input', calculate));
+        });
+    </script>
+</body>
+</html>

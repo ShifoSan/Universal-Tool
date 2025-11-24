@@ -1,14 +1,14 @@
 {
-  "name": "All-in-one Pocket",
-  "short_name": "PocketTools",
+  "name": "Universal Tool",
+  "short_name": "UniTool",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#001F3F",
-  "theme_color": "#001F3F",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "512x512",
+      "src": "https://unpkg.com/lucide-static@latest/icons/box.svg",
+      "sizes": "192x192",
       "type": "image/svg+xml"
     }
   ]

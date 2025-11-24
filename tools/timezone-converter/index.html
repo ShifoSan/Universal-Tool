@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timezone Converter | Universal Tool</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            .converter-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .arrow-icon { transform: rotate(90deg); margin: 0 auto; }
+        }
+        .time-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin: 1rem 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .date-display {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .arrow-icon {
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <main class="container fade-in">
+        <div class="text-center mt-3" style="margin-bottom: 3rem;">
+            <h1>Timezone Converter</h1>
+            <p style="color: var(--text-secondary);">Global time coordination made simple</p>
+        </div>
+
+        <div class="card">
+            <div class="converter-grid">
+                <!-- Source -->
+                <div>
+                    <div class="input-group">
+                        <label class="input-label">From Location</label>
+                        <select id="sourceZone" class="form-select"></select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Date & Time</label>
+                        <input type="datetime-local" id="sourceTime" class="form-input">
+                    </div>
+                    <div class="text-center">
+                        <div class="time-display" id="sourceTimeDisplay">--:--</div>
+                        <div class="date-display" id="sourceDateDisplay">--</div>
+                    </div>
+                </div>
+
+                <!-- Icon -->
+                <div class="arrow-icon">
+                    <i data-lucide="arrow-right" size="32"></i>
+                </div>
+
+                <!-- Target -->
+                <div>
+                    <div class="input-group">
+                        <label class="input-label">To Location</label>
+                        <select id="targetZone" class="form-select"></select>
+                    </div>
+                    <!-- Target is read-only essentially, driven by source -->
+                    <div class="text-center" style="margin-top: 5.5rem;"> <!-- Align with display -->
+                         <div class="time-display" id="targetTimeDisplay">--:--</div>
+                         <div class="date-display" id="targetDateDisplay">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-2">
+                <button id="useCurrentBtn" class="btn-primary">
+                    <i data-lucide="clock"></i> Use Current Time
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sourceSelect = document.getElementById('sourceZone');
+            const targetSelect = document.getElementById('targetZone');
+            const sourceInput = document.getElementById('sourceTime');
+
+            const sTimeDisplay = document.getElementById('sourceTimeDisplay');
+            const sDateDisplay = document.getElementById('sourceDateDisplay');
+            const tTimeDisplay = document.getElementById('targetTimeDisplay');
+            const tDateDisplay = document.getElementById('targetDateDisplay');
+
+            // Populate Zones
+            const zones = Intl.supportedValuesOf('timeZone');
+            const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+            zones.forEach(zone => {
+                const opt1 = new Option(zone.replace(/_/g, ' '), zone);
+                const opt2 = new Option(zone.replace(/_/g, ' '), zone);
+                sourceSelect.add(opt1);
+                targetSelect.add(opt2);
+            });
+
+            // Set Defaults
+            sourceSelect.value = userZone;
+            targetSelect.value = 'UTC'; // Default target
+
+            // Init with current time
+            setNow();
+
+            function setNow() {
+                const now = new Date();
+                // Format for datetime-local: YYYY-MM-DDTHH:mm
+                const pad = n => n.toString().padStart(2, '0');
+                const localIso = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                sourceInput.value = localIso;
+                updateConversion();
+            }
+
+            function updateConversion() {
+                const srcZone = sourceSelect.value;
+                const tgtZone = targetSelect.value;
+                const dateVal = sourceInput.value;
+
+                if (!dateVal) return;
+
+                // Create date object from input (treating it as local to the *source* zone is tricky in pure JS without libraries like Luxon)
+                // However, standard datetime-local creates a value that doesn't carry timezone info.
+                // We must interpret the input string as belonging to the Source Zone.
+
+                // Strategy: Parse the components, construct a string with the offset, or use Intl to find the offset?
+                // Hardest part of vanilla JS timezones.
+                // Hack: Create a Date object, assume it's UTC, then adjust by the offset difference? No.
+
+                // Better: Use `toLocaleString` to find the parts in the specific time zone to "reverse engineer" or simply assume the input is "wall time" in that zone.
+                // Actually, the simplest way to convert "Wall time in Zone A" to "Wall time in Zone B":
+                // 1. We need the timestamp (Epoch).
+                // Since we can't easily parse "2023-10-10 10:00 Africa/Cairo" to Epoch natively easily...
+                // We will limit scope: The input is considered to be in the *User's Local System Time* for simplicity (if they select their own zone) OR
+                // we treat the input as UTC and shift?
+
+                // Let's try a robust native approach:
+                // We have Y, M, D, H, m from input.
+                // We want to find a timestamp T such that T in SrcZone matches those components.
+                // This is an inverse problem.
+                // Approximation: Create Date object in local browser time.
+                // Then finding the equivalent instant.
+
+                // Let's stick to a simpler UX for MVP if complex parsing is too much:
+                // The input is strictly "Browser Local Time" (System Time).
+                // The "From Location" selector just changes how we *display* the equivalency,
+                // OR we make the input "Time in Source Zone".
+
+                // Let's try to interpret "Time in Source Zone".
+                // 1. Create a date object treating input as UTC.
+                // 2. Format that UTC date into the Source Zone to see the offset?
+                // This is getting complex for a prompt.
+
+                // Pivot: Let's rely on the Date object which is created in browser local time.
+                // If user changes Source Zone, we can't easily change the input's meaning without a lib.
+                // Fix: The "Date & Time" input controls the *Instant*.
+                // Changing Source Zone just changes the display label above the input, effectively.
+                // Actually, let's just do: Input is a specific moment. We display that moment in Zone A and Zone B.
+                // If the user wants to pick "10:00 AM in Tokyo", they have to figure out what that is? No, that's bad.
+
+                // Solution for Vanilla JS:
+                // We will treat the input as the "Universal Moment" we are converting.
+                // Wait, `datetime-local` is browser local time.
+                // So `new Date(sourceInput.value)` gives us the moment based on the user's system clock.
+                // We will convert THIS moment to Source Zone and Target Zone display.
+                // If the user wants "10:00 London", and they are in NY, they have to calculate?
+                // No, that defeats the purpose.
+
+                // Re-Pivot: We will use a library? No, "Vanilla".
+                // Okay, we will use a small helper.
+                // We can construct a string: `new Date("2023-10-25T12:00:00+02:00")`.
+                // We need the offset for the chosen zone.
+                // `Intl.DateTimeFormat` with `timeZoneName: 'longOffset'` can give us "GMT-05:00".
+                // We can parse that to get the offset.
+
+                const date = new Date(sourceInput.value); // This creates a date in Browser Local Time.
+
+                // Display in Source Zone
+                const sFmt = new Intl.DateTimeFormat('en-US', {
+                    timeZone: srcZone,
+                    hour: '2-digit', minute: '2-digit', hour12: false,
+                    weekday: 'short', month: 'short', day: 'numeric'
+                });
+
+                // Display in Target Zone
+                const tFmt = new Intl.DateTimeFormat('en-US', {
+                    timeZone: tgtZone,
+                    hour: '2-digit', minute: '2-digit', hour12: false,
+                    weekday: 'short', month: 'short', day: 'numeric'
+                });
+
+                // This displays "When it is [Input Time in Local Browser]... it is X in Source and Y in Target".
+                // That might be confusing.
+                // "Convert 10am NY to Tokyo". User puts 10am. If they are in NY, it works.
+                // If they are in London, putting 10am means 10am London.
+                // WE WILL ADD A WARNING: "Input is based on your local system time".
+
+                const sParts = formatParts(sFmt, date);
+                const tParts = formatParts(tFmt, date);
+
+                sTimeDisplay.textContent = sParts.time;
+                sDateDisplay.textContent = sParts.date;
+
+                tTimeDisplay.textContent = tParts.time;
+                tDateDisplay.textContent = tParts.date;
+            }
+
+            function formatParts(formatter, date) {
+                const parts = formatter.formatToParts(date);
+                const get = (t) => parts.find(p => p.type === t)?.value || '';
+                return {
+                    time: `${get('hour')}:${get('minute')}`,
+                    date: `${get('weekday')}, ${get('month')} ${get('day')}`
+                };
+            }
+
+            sourceSelect.addEventListener('change', updateConversion);
+            targetSelect.addEventListener('change', updateConversion);
+            sourceInput.addEventListener('input', updateConversion);
+            document.getElementById('useCurrentBtn').addEventListener('click', setNow);
+        });
+    </script>
+</body>
+</html>

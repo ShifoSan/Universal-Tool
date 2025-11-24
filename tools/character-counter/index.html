@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Counter | Universal Tool</title>
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .editor-container {
+            position: relative;
+        }
+        textarea {
+            width: 100%;
+            height: 400px;
+            resize: vertical;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-header-container"></div>
+
+    <main class="container fade-in">
+        <div class="text-center mt-3" style="margin-bottom: 3rem;">
+            <h1>Character Counter</h1>
+            <p style="color: var(--text-secondary);">Real-time text analysis engine</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="charCount">0</div>
+                <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="wordCount">0</div>
+                <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="sentenceCount">0</div>
+                <div class="stat-label">Sentences</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="lineCount">0</div>
+                <div class="stat-label">Lines</div>
+            </div>
+        </div>
+
+        <div class="card editor-container">
+            <textarea id="textInput" class="form-textarea" placeholder="Type or paste your text here to analyze..."></textarea>
+
+            <div class="toolbar">
+                <button id="clearBtn" class="btn-secondary">
+                    <i data-lucide="trash-2"></i> Clear
+                </button>
+                <button id="copyBtn" class="btn-primary">
+                    <i data-lucide="copy"></i> Copy Text
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/theme-manager.js"></script>
+    <script src="../../js/shared-ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('textInput');
+            const charDisplay = document.getElementById('charCount');
+            const wordDisplay = document.getElementById('wordCount');
+            const sentDisplay = document.getElementById('sentenceCount');
+            const lineDisplay = document.getElementById('lineCount');
+
+            function analyze() {
+                const text = input.value;
+
+                // Characters
+                charDisplay.textContent = text.length;
+
+                // Words (split by whitespace, filter empty)
+                const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+                wordDisplay.textContent = words.length;
+
+                // Sentences (rough approx: split by .!? followed by space or EOF)
+                // Filter out empty entries
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                sentDisplay.textContent = sentences.length;
+
+                // Lines
+                const lines = text.split(/\n/);
+                // If text is empty, lines is 0. If 1 empty line, it's 1.
+                // Standard behavior: 0 chars = 0 lines? Or 1? Usually 1 if cursor exists, but for stats 0 is cleaner.
+                lineDisplay.textContent = text.length === 0 ? 0 : lines.length;
+            }
+
+            input.addEventListener('input', analyze);
+
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                input.value = '';
+                analyze();
+                input.focus();
+            });
+
+            document.getElementById('copyBtn').addEventListener('click', () => {
+                input.select();
+                document.execCommand('copy');
+                // Could add toast notification here
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    lucide.createIcons();
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

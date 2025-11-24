@@ -1,203 +1,288 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-in-one Pocket | Modern Multi-Tool Hub</title>
-    <meta name="description" content="Access a suite of modern web tools including Unit Converter, Time Zone Converter, Typing Speed Test, and more. Simple, fast, and beautiful.">
+    <title>Universal Tool | Futuristic Workspace</title>
+    <meta name="description" content="Advanced multi-tool web app including converters, calculators, and productivity tools.">
     <link rel="manifest" href="manifest.json">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* Hero Specifics */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--text-primary), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            transform: scale(1.02);
+            border-color: var(--accent-primary);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Filter Tags */
+        .filter-tags {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0 4rem;
+        }
+    </style>
 </head>
 <body>
-    <!-- App Header -->
+
+    <!-- Header (Static for Index) -->
     <header class="app-header">
-        <div class="container header-content">
-            <a href="index.html" class="brand-link">
-                <i data-lucide="rocket"></i>
-                All-in-one Pocket
-            </a>
-            <div class="nav-actions">
-                <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark/Light Mode">
-                    <i data-lucide="moon" id="themeIcon"></i>
-                </button>
+        <div class="container" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+             <div class="header-brand">
+                <i data-lucide="box" style="color: var(--accent-primary);"></i>
+                <span>Universal Tool</span>
             </div>
+            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Theme">
+                <i data-lucide="sun-moon"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <!-- 3D Animated Logo -->
-            <div class="logo-container">
-                <div class="hexagon-3d">
-                    <div class="face front">
-                        <i data-lucide="rocket"></i>
-                    </div>
-                    <div class="face back">
-                        <i data-lucide="rocket"></i>
-                    </div>
-                    <!-- Side Faces for 3D Thickness -->
-                    <div class="face side s1"></div>
-                    <div class="face side s2"></div>
-                    <div class="face side s3"></div>
-                    <div class="face side s4"></div>
-                    <div class="face side s5"></div>
-                    <div class="face side s6"></div>
-                </div>
+    <main class="container">
+
+        <section class="hero fade-in">
+            <h1>The Ultimate Workspace</h1>
+            <p>A suite of powerful, precision-engineered tools for developers and creators. Fast, private, and designed for you.</p>
+
+            <div class="search-bar">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search tools (e.g. 'QR', 'Type')...">
             </div>
 
-            <h1 class="hero-title">All-in-one Pocket</h1>
-            <p class="hero-subtitle">Your futuristic multi-tool hub for everyday tasks</p>
-
-            <!-- Search & Filter -->
-            <div class="search-section">
-                <div class="search-container">
-                    <i data-lucide="search" class="search-icon"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search tools (e.g., 'converter', 'typing')...">
-                </div>
-                <div class="filter-tags" id="filterTags">
-                    <button class="filter-tag active" data-filter="all">All</button>
-                    <button class="filter-tag" data-filter="converters">Converters</button>
-                    <button class="filter-tag" data-filter="productivity">Productivity</button>
-                    <button class="filter-tag" data-filter="math">Math</button>
-                    <button class="filter-tag" data-filter="ai-tools">AI Tools</button>
-                </div>
+            <div class="filter-tags" id="filterTags">
+                <button class="filter-tag active" data-filter="all">All Tools</button>
+                <button class="filter-tag" data-filter="converter">Converters</button>
+                <button class="filter-tag" data-filter="productivity">Productivity</button>
+                <button class="filter-tag" data-filter="math">Math</button>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Dashboard Section -->
-    <main class="dashboard">
-        <div class="container">
-            
-            <!-- Converters Section -->
-            <section id="sec-converters" class="tool-section" data-category="converters">
-                <div class="section-header">
-                    <i data-lucide="arrow-right-left" color="var(--accent-color)"></i>
-                    <h3>Converters</h3>
+        <section class="tools-grid" id="toolsGrid">
+            <!-- Tool 1: Character Counter -->
+            <a href="tools/character-counter/index.html" class="card tool-card" data-category="productivity" data-name="character counter word text">
+                <div class="tool-icon-wrapper">
+                    <i data-lucide="align-left"></i>
                 </div>
-                <div class="tools-grid">
-                    <!-- Unit Converter -->
-                    <a href="tools/unit-converter.html" class="tool-card" data-tool="unit-converter" data-category="converters">
-                        <div class="tool-icon">
-                            <i data-lucide="ruler" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">Unit Converter</h3>
-                        <p class="tool-description">Convert between length, weight, temperature, and more.</p>
-                        <span class="tool-badge">Live</span>
-                    </a>
+                <div class="tool-content">
+                    <h3 class="tool-title">Character Counter</h3>
+                    <p class="tool-desc">Analyze text metrics including words, characters, sentences, and reading time.</p>
+                </div>
+            </a>
 
-                    <!-- Time Zone Converter -->
-                    <a href="tools/timezone-converter.html" class="tool-card" data-tool="timezone-converter" data-category="converters">
-                        <div class="tool-icon">
-                            <i data-lucide="globe" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">Time Zone Converter</h3>
-                        <p class="tool-description">Convert time across different global time zones.</p>
-                        <span class="tool-badge">Live</span>
-                    </a>
+            <!-- Tool 2: Percentage Calculator -->
+            <a href="tools/percentage-calculator/index.html" class="card tool-card" data-category="math" data-name="percentage calculator math">
+                <div class="tool-icon-wrapper">
+                    <i data-lucide="percent"></i>
                 </div>
-            </section>
+                <div class="tool-content">
+                    <h3 class="tool-title">Percentage Calculator</h3>
+                    <p class="tool-desc">Compute percentages, increases, decreases, and reverse calculations instantly.</p>
+                </div>
+            </a>
 
-            <!-- AI Tools Section -->
-            <section id="sec-ai-tools" class="tool-section" data-category="ai-tools">
-                <div class="section-header">
-                    <i data-lucide="sparkles" color="var(--accent-color)"></i>
-                    <h3>AI Tools</h3>
+            <!-- Tool 3: QR Generator -->
+            <a href="tools/qr-code-generator/index.html" class="card tool-card" data-category="productivity" data-name="qr code generator link">
+                <div class="tool-icon-wrapper">
+                    <i data-lucide="qr-code"></i>
                 </div>
-                <div class="tools-grid">
-                    <!-- AI Help Chat -->
-                    <a href="tools/ai-help-chat.html" class="tool-card" data-tool="ai-help-chat" data-category="ai-tools">
-                        <div class="tool-icon">
-                            <i data-lucide="message-circle" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">AI Help Chat</h3>
-                        <p class="tool-description">Get instant help understanding and using any tool in this app.</p>
-                        <span class="tool-badge">AI Powered</span>
-                    </a>
+                <div class="tool-content">
+                    <h3 class="tool-title">QR Code Generator</h3>
+                    <p class="tool-desc">Create downloadable QR codes for URLs, text, and Wi-Fi networks.</p>
                 </div>
-            </section>
+            </a>
 
-            <!-- Productivity Section -->
-            <section id="sec-productivity" class="tool-section" data-category="productivity">
-                <div class="section-header">
-                    <i data-lucide="zap" color="var(--accent-color)"></i>
-                    <h3>Productivity</h3>
+            <!-- Tool 4: Timezone Converter -->
+            <a href="tools/timezone-converter/index.html" class="card tool-card" data-category="converter" data-name="timezone converter time clock">
+                <div class="tool-icon-wrapper">
+                    <i data-lucide="globe"></i>
                 </div>
-                <div class="tools-grid">
-                    <!-- Typing Speed Test -->
-                    <a href="tools/typing-speed-test.html" class="tool-card" data-tool="typing-test" data-category="productivity">
-                        <div class="tool-icon">
-                            <i data-lucide="keyboard" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">Typing Speed Test</h3>
-                        <p class="tool-description">Test your WPM and accuracy with various text samples.</p>
-                        <span class="tool-badge">Live</span>
-                    </a>
-
-                    <!-- Character Counter -->
-                    <a href="tools/character-counter.html" class="tool-card" data-tool="char-counter" data-category="productivity">
-                        <div class="tool-icon">
-                            <i data-lucide="align-left" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">Character Counter</h3>
-                        <p class="tool-description">Real-time count of words, characters, and sentences.</p>
-                        <span class="tool-badge">Live</span>
-                    </a>
-
-                    <!-- QR Code Generator -->
-                    <a href="tools/qr-code-generator.html" class="tool-card" data-tool="qr-generator" data-category="productivity">
-                        <div class="tool-icon">
-                            <i data-lucide="qr-code" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">QR Code Generator</h3>
-                        <p class="tool-description">Convert text, links, or emails to QR codes instantly.</p>
-                        <span class="tool-badge">New</span>
-                    </a>
+                <div class="tool-content">
+                    <h3 class="tool-title">Timezone Converter</h3>
+                    <p class="tool-desc">Compare times across the globe with an interactive time picker.</p>
                 </div>
-            </section>
+            </a>
 
-            <!-- Math Section -->
-            <section id="sec-math" class="tool-section" data-category="math">
-                <div class="section-header">
-                    <i data-lucide="calculator" color="var(--accent-color)"></i>
-                    <h3>Math</h3>
+            <!-- Tool 5: Typing Speed Test -->
+            <a href="tools/typing-speed-test/index.html" class="card tool-card" data-category="productivity" data-name="typing speed test game wpm">
+                <div class="tool-icon-wrapper">
+                    <i data-lucide="keyboard"></i>
                 </div>
-                <div class="tools-grid">
-                    <!-- Percentage Calculator -->
-                    <a href="tools/percentage-calculator.html" class="tool-card" data-tool="percentage-calc" data-category="math">
-                        <div class="tool-icon">
-                            <i data-lucide="percent" size="48"></i>
-                        </div>
-                        <h3 class="tool-title">Percentage Calculator</h3>
-                        <p class="tool-description">Calculate percentages, increases, and decreases quickly.</p>
-                        <span class="tool-badge">Live</span>
-                    </a>
+                <div class="tool-content">
+                    <h3 class="tool-title">Typing Speed Test</h3>
+                    <p class="tool-desc">Challenge your typing speed and accuracy with real-time analytics.</p>
                 </div>
-            </section>
+            </a>
 
-            <!-- No Results Message -->
-            <div id="noResults" class="hidden" style="text-align: center; padding: 3rem;">
-                <i data-lucide="frown" size="48" style="color: var(--text-secondary); margin-bottom: 1rem;"></i>
-                <p style="color: var(--text-secondary);">No tools found matching your criteria.</p>
+            <!-- Tool 6: Unit Converter -->
+            <a href="tools/unit-converter/index.html" class="card tool-card" data-category="converter" data-name="unit converter weight length">
+                <div class="tool-icon-wrapper">
+                    <i data-lucide="ruler"></i>
+                </div>
+                <div class="tool-content">
+                    <h3 class="tool-title">Unit Converter</h3>
+                    <p class="tool-desc">Convert between thousands of units for length, mass, temperature, and more.</p>
+                </div>
+            </a>
+
+            <div id="noResults" class="hidden text-center" style="grid-column: 1/-1; padding: 4rem;">
+                <i data-lucide="search-x" style="width: 48px; height: 48px; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+                <p style="color: var(--text-secondary);">No tools found matching your search.</p>
             </div>
+        </section>
 
-        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>Made by <strong>ShifoSan</strong> | 2025</p>
-            <p class="footer-links">
-                <a href="https://github.com/ShifoSan/All-in-one-Pocket" target="_blank">
-                    <i data-lucide="github" style="vertical-align: middle; margin-right: 5px; width: 16px;"></i>GitHub
-                </a>
-            </p>
-        </div>
-    </footer>
+    <!-- Scripts -->
+    <script src="js/theme-manager.js"></script>
+    <script>
+        // Inline Search Logic for Hub
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const filterTags = document.querySelectorAll('.filter-tag');
+            const cards = document.querySelectorAll('.tool-card');
+            const noResults = document.getElementById('noResults');
 
-    <script src="script.js"></script>
+            let activeCategory = 'all';
+
+            // Init Icons
+            lucide.createIcons();
+
+            // Search Function
+            function filterTools() {
+                const query = searchInput.value.toLowerCase();
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const name = card.dataset.name;
+                    const category = card.dataset.category;
+                    const matchesSearch = name.includes(query);
+                    const matchesCategory = activeCategory === 'all' || category === activeCategory;
+
+                    if (matchesSearch && matchesCategory) {
+                        card.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            }
+
+            searchInput.addEventListener('input', filterTools);
+
+            // Filter Tags
+            filterTags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    // Update active state
+                    filterTags.forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+
+                    activeCategory = tag.dataset.filter;
+                    filterTools();
+                });
+            });
+
+            // Theme Toggle
+            document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+               if (window.toggleTheme) window.toggleTheme();
+            });
+
+            // Service Worker Registration
+             if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('SW registered'))
+                .catch(err => console.log('SW registration failed', err));
+            }
+        });
+    </script>
 </body>
 </html>
